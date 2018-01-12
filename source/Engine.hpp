@@ -44,7 +44,6 @@ namespace engine2d {
 			}
 
 			GraphicsSystem::init();
-			EntitySystem::init();
 		}
 
 		void loop() {

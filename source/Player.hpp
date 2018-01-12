@@ -6,15 +6,14 @@
 
 namespace engine2d {
 	struct Player : Entity {
-		Sprite sprite = Sprite("res/space.bmp");
 
-		Player() : Entity() {
+		Player(Texture* tex) : Entity() {
 			transformComponent.scale = glm::vec3(2.0f, 2.0f, 1.0f);
-			graphicsComponent = GraphicsSystem::createComponent(this, sprite);
+			graphicsComponent = GraphicsSystem::createComponent(this, tex);
 		}
 
-		Player(Transform transform) : Entity(transform) {
-			graphicsComponent = GraphicsSystem::createComponent(this, sprite);
+		Player(Texture* tex, Transform transform) : Entity(transform) {
+			graphicsComponent = GraphicsSystem::createComponent(this, tex);
 		}
 
 		void init() {}

@@ -11,6 +11,7 @@ namespace engine2d {
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
 		Transform() : Component(NULL) {}
+
 		Transform(Entity* entity) : Component(entity) {}
 
 		Transform(Entity* entity, glm::vec3 posi, glm::vec3 scalei, glm::vec3 eulerroti) : Component(entity) {

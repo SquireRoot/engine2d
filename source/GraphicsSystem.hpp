@@ -10,21 +10,31 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <algorithm> 
 
-#define SHADER_BUFFER_SIZE
+/*
+TODO
+- normal vector?
+- change texture array to a array texture
+- send the mvp matricies as an array of all models
+- change to single gldrawtriangles call per iteration
+*/
 
 namespace engine2d {
 	namespace GraphicsSystem {
 		std::vector<GraphicsComponent*> graphicsComponents;
+		std::vector<Texture*> loadedTextures;
 
 		GLuint VertexArrayID;
 		GLuint ShaderID;
+		GLuint VertexBufferID;
+		GLuint uvBufferID;
 
 		extern glm::mat4 Projection;
 		extern glm::mat4 View;
 
 		GLuint compileShaders() {
-						/* loading shaders */
+			/* loading shaders */
 			GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 			GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
@@ -117,9 +127,9 @@ namespace engine2d {
 			return ProgramID;
 		}
 
-
 		void init() {
 			glEnable(GL_DEPTH_TEST);
+			glEnable(GL_TEXTURE_2D_ARRAY);
 			glDepthFunc(GL_LESS);
 
 			glGenVertexArrays(1, &VertexArrayID);
@@ -129,27 +139,67 @@ namespace engine2d {
 
 			Projection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 10.0f, -20.0f);
 			View = glm::lookAt(glm::vec3(0, 0, 10), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+
+			// load the vertex buffer
+			const GLfloat verticies[18] = {
+				// triangle 1: top left
+				-1.0f, -1.0f, 0.0f,
+				-1.0f, 1.0f, 0.0f,
+				1.0f, 1.0f, 0.0f,
+				// triangle 2: bottom right
+				-1.0f, -1.0f, 0.0f,
+				1.0f, -1.0f, 0.0f,
+				1.0f, 1.0f, 0.0f
+			};
+
+			glGenBuffers(1, &VertexBufferID);
+			glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), verticies, GL_STATIC_DRAW);
+
+			// load the UV buffer
+			const GLfloat uvs[12] = {
+				// triangle 1: top left
+				0.0f, 0.0f,
+				0.0f, 1.0f,
+				1.0f, 1.0f,
+				// triangle 2: bottom right
+				0.0f, 0.0f,
+				1.0f, 0.0f,
+				1.0f, 1.0f
+			};
+
+			glGenBuffers(1, &uvBufferID);
+			glBindBuffer(GL_ARRAY_BUFFER, uvBufferID);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(uvs), uvs, GL_STATIC_DRAW);
 		}
 
 		void update() {
+			// clear and start rendering
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glUseProgram(ShaderID);
+
 			GLuint mvpMatrixID = glGetUniformLocation(ShaderID, "MVP");
+			GLuint SamplerID = glGetUniformLocation(ShaderID, "sampler");
 
 			for (int i = 0; i < graphicsComponents.size(); i++) {
 				GraphicsComponent* component = graphicsComponents[i];
 				component->update();
+
 				glm::mat4 mvp = component->modelViewProjection;
 				glUniformMatrix4fv(mvpMatrixID, 1, GL_FALSE, &mvp[0][0]);
 
-				// vertex buffer
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, component->texture->TextureID);
+				glUniform1i(SamplerID, 0);
+
+				// verts
 				glEnableVertexAttribArray(0);
-				glBindBuffer(GL_ARRAY_BUFFER, component->vertexBuffer);
+				glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
 				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-				// texture uv buffer
+				// uvs
 				glEnableVertexAttribArray(1);
-				glBindBuffer(GL_ARRAY_BUFFER, component->uvBuffer);
+				glBindBuffer(GL_ARRAY_BUFFER, uvBufferID);
 				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 				glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -161,9 +211,14 @@ namespace engine2d {
 			glfwSwapBuffers(Engine::window);
 		}
 
+		Texture* createTexture(const char* filepath) {
+			Texture* texture = new Texture(filepath, loadedTextures.size());
+			loadedTextures.push_back(texture);
+			return texture;
+		}
 
-		GraphicsComponent* createComponent(Entity* entity, Sprite sprite) { // needs to allow input for meshes instead
-			GraphicsComponent* component = new GraphicsComponent(entity, sprite);
+		GraphicsComponent* createComponent(Entity* entity, Texture* texture) {
+			GraphicsComponent* component = new GraphicsComponent(entity, texture);
 			graphicsComponents.push_back(component);
 			return component;
 		}

@@ -1,10 +1,5 @@
 #pragma once
 
-/* TODO
-add sprite sheet suport
-
-*/
-
 #include <FoxLib\Log.hpp>
 #include <FoxLib\Types.hpp>
 
@@ -39,8 +34,7 @@ namespace engine2d {
 }
 
 // game includes, order is important
-#include "Sprite.hpp"
-#include "SpriteSheet.hpp"
+#include "Texture.hpp"
 #include "Component.hpp"
 #include "Transform.hpp"
 #include "Entity.hpp"
@@ -63,8 +57,18 @@ namespace engine2d {
 		log.write("Initializing\n");
 		Engine::init();
 
-		//code for entity creation goes here
-		Player player;
+		// begin textures
+		Texture* img = GraphicsSystem::createTexture("res/space.bmp");
+		Texture* img2 = GraphicsSystem::createTexture("res/space2.bmp");
+		// end textures
+
+		// begin entities
+		Player player = Player(img);
+
+		Transform trans = Transform();
+		trans.position = glm::vec3(5.0f, 0.0f, 0.0f);
+		Player player2 = Player(img2, trans);
+		// end entities
 
 		log.write("Starting main loop\n");
 		state = GameState::LOOP;

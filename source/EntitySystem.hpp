@@ -6,8 +6,6 @@ namespace engine2d {
 	namespace EntitySystem {
 		std::vector<Entity*> entities;
 
-		void init() {}
-
 		void update() {
 			for (int i = 0; i < entities.size(); i++) {
 				entities.at(i)->update();
