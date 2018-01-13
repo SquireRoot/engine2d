@@ -56,7 +56,10 @@ namespace engine2d {
 
 			float64 fps = 0;
 
-			while (state == GameState::LOOP && !InputSystem::isKeyDown(VK_ESCAPE)) {
+			while (state == GameState::LOOP &&
+				   !InputSystem::isKeyDown(VK_ESCAPE) &&
+				   !glfwWindowShouldClose(window)) {
+
 				time = GetTickCount64() - starttime;
 				dtime = time - timei;
 				accumulator += dtime;
@@ -74,6 +77,8 @@ namespace engine2d {
 
 				fps = framecount / ((GetTickCount64() - starttime) - time);
 				timei = time;
+
+				glfwPollEvents();
 			}
 		}
 	};
