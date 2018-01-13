@@ -10,7 +10,7 @@ namespace engine2d {
 
 		GLuint TextureID;
 		
-		Texture(const char* filepath, int texIndex) {
+		Texture(const char* filepath) {
 			if (state == GameState::INIT) {
 				std::ifstream bmpfile;
 				bmpfile.open(filepath, std::ios::in | std::ios::binary);

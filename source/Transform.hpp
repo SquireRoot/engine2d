@@ -14,7 +14,7 @@ namespace engine2d {
 
 		Transform(Entity* entity) : Component(entity) {}
 
-		Transform(Entity* entity, glm::vec3 posi, glm::vec3 scalei, glm::vec3 eulerroti) : Component(entity) {
+		Transform(Entity* entity, glm::vec3 posi, glm::vec3 scalei) : Component(entity) {
 			position = posi;
 			scale = scalei;
 		}

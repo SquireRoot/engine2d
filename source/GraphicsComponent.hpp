@@ -10,7 +10,6 @@ namespace engine2d {
 		glm::mat4 modelViewProjection;
 
 		Texture* texture;
-		GLuint uvBuffer;
 
 		//some mesh object
 		GraphicsComponent(Entity* entity,  Texture* tex) : Component(entity) {

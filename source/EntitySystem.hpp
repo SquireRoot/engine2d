@@ -8,7 +8,8 @@ namespace engine2d {
 
 		void update() {
 			for (int i = 0; i < entities.size(); i++) {
-				entities.at(i)->update();
+				entities[i]->updateChildren();
+				entities[i]->update();
 			}
 		}
 
@@ -18,7 +19,7 @@ namespace engine2d {
 
 		void remove(Entity* entity) {
 			for (int i = 0; i < entities.size(); i++) {
-				if (entities.at(i) == entity) {
+				if (entities[i]->id == entity->id) {
 					entities.erase((entities.begin() + i));
 				}
 			}

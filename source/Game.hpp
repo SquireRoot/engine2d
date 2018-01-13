@@ -65,9 +65,9 @@ namespace engine2d {
 		// begin entities
 		Player player = Player(img);
 
-		Transform trans = Transform();
-		trans.position = glm::vec3(5.0f, 0.0f, 0.0f);
-		Player player2 = Player(img2, trans);
+		Player2 child = Player2(img2);
+		child.localTransformComponent.position = glm::vec3(5.0f, 0.0f, 0.0f);
+		player.addChild(&child);
 		// end entities
 
 		log.write("Starting main loop\n");

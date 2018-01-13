@@ -1,0 +1,12 @@
+
+
+!Goals!
+change entity components to a list of components
+add child support to entities
+transparency
+animation (2d array texture)
+add text/font support
+check framerate 
+add quiery precision timer
+add rotations to transform component
+add linux and mac support

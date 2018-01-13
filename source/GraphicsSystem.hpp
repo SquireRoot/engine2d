@@ -212,7 +212,7 @@ namespace engine2d {
 		}
 
 		Texture* createTexture(const char* filepath) {
-			Texture* texture = new Texture(filepath, loadedTextures.size());
+			Texture* texture = new Texture(filepath);
 			loadedTextures.push_back(texture);
 			return texture;
 		}
@@ -225,8 +225,7 @@ namespace engine2d {
 
 		void destroyComponent(GUID id) {
 			for (int i = 0; i < graphicsComponents.size(); i++) {
-				GUID compareid = graphicsComponents.at(i)->id;
-				if (IsEqualGUID(id, compareid)) {
+				if (id == graphicsComponents[i]->id) {
 					delete graphicsComponents[i];
 					graphicsComponents.erase((graphicsComponents.begin() + i));
 				}

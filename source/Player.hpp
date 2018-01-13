@@ -8,7 +8,7 @@ namespace engine2d {
 	struct Player : Entity {
 
 		Player(Texture* tex) : Entity() {
-			transformComponent.scale = glm::vec3(2.0f, 2.0f, 1.0f);
+			transformComponent.scale = glm::vec3(1.0f, 1.0f, 1.0f);
 			graphicsComponent = GraphicsSystem::createComponent(this, tex);
 		}
 
@@ -39,5 +39,19 @@ namespace engine2d {
 				transformComponent.scale += glm::vec3(0.0f, -0.025f, 0.0f);
 			}
 		}
+	};
+
+	struct Player2 : Entity {
+		Player2(Texture* tex) : Entity() {
+			transformComponent.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+			graphicsComponent = GraphicsSystem::createComponent(this, tex);
+		}
+
+		Player2(Texture* tex, Transform transform) : Entity(transform) {
+			graphicsComponent = GraphicsSystem::createComponent(this, tex);
+		}
+
+		void init() {}
+		void update() {}
 	};
 }
