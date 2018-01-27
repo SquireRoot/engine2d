@@ -129,8 +129,11 @@ namespace engine2d {
 
 		void init() {
 			glEnable(GL_DEPTH_TEST);
-			glEnable(GL_TEXTURE_2D_ARRAY);
+			glDisable(GL_CULL_FACE);
 			glDepthFunc(GL_LESS);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 
 			glGenVertexArrays(1, &VertexArrayID);
 			glBindVertexArray(VertexArrayID);
@@ -211,8 +214,8 @@ namespace engine2d {
 			glfwSwapBuffers(Engine::window);
 		}
 
-		Texture* createTexture(const char* filepath) {
-			Texture* texture = new Texture(filepath);
+		Texture* createTexture(const char* filepath, bool isTransparent) {
+			Texture* texture = new Texture(filepath, isTransparent);
 			loadedTextures.push_back(texture);
 			return texture;
 		}

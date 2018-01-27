@@ -57,17 +57,20 @@ namespace engine2d {
 		log.write("Initializing\n");
 		Engine::init();
 
-		// begin textures
-		Texture* img = GraphicsSystem::createTexture("res/space.bmp");
-		Texture* img2 = GraphicsSystem::createTexture("res/space2.bmp");
+		//begin textures
+		//Texture* backgroundtex = GraphicsSystem::createTexture("res/spacepng.png", false);
+		Texture* cat = GraphicsSystem::createTexture("res/fontsheet.png", false);
 		// end textures
 
 		// begin entities
-		Player player = Player(img);
+		Player player = Player(cat);
+		//player.transformComponent.position = glm::vec3(0.0f, 0.0f, 1.0f);
 
-		Player2 child = Player2(img2);
-		child.localTransformComponent.position = glm::vec3(5.0f, 0.0f, 0.0f);
-		player.addChild(&child);
+		//Payer2 background = Player2(backgroundtex);
+		//child.transformComponent.scale = glm::vec3(10.0f, 10.0f, 1.0f);
+		//child.transformComponent.position = glm::vec3(0.0f, 0.0f, 0.0f);
+		// child.localTransformComponent.position = glm::vec3(5.0f, 0.0f, 0.0f);
+		// player.addChild(&child);
 		// end entities
 
 		log.write("Starting main loop\n");

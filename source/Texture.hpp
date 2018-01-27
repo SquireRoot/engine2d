@@ -1,67 +1,53 @@
 #include <fstream>
 
+// cimg stuff
+#define cimg_display 0
+#define cimg_use_png 1
+#include "CImg\CImg.h"
+
 namespace engine2d {
 	struct Texture {
-		GLfloat uv[12];
-
 		uint32 width;
 		uint32 height;
 		uint32 imageSize;
 
 		GLuint TextureID;
 		
-		Texture(const char* filepath) {
+		Texture(const char* filepath, bool isTransparent) {
 			if (state == GameState::INIT) {
-				std::ifstream bmpfile;
-				bmpfile.open(filepath, std::ios::in | std::ios::binary);
-				if (!bmpfile.good()) {
-					log.write(filepath);
-					log.write(" could not be opened!\n");
-					exit(1);
+				cimg_library::CImg<unsigned char> pngImage = cimg_library::CImg<char>(filepath);
+				unsigned char* imageData = new unsigned char[pngImage.width()*pngImage.height()*3];
+
+				if (isTransparent) {
+					for (int y = 0; y < pngImage.height(); y++) {
+						for (int x = 0; x < pngImage.width(); x++) {
+							uint32 pixelIndex = y*pngImage.width() + x;
+							imageData[pixelIndex] = pngImage(x, y, 0);
+							imageData[pixelIndex + 1] = pngImage(x, y, 1);
+							imageData[pixelIndex + 2] = pngImage(x, y, 2);
+							//imageData[pixelIndex + 3] = pngImage(x, y, 3);
+						}
+					}
+				} else {
+					for (int y = 0; y < pngImage.height(); y++) {
+						for (int x = 0; x < pngImage.width(); x++) {
+							uint32 pixelIndex = y*pngImage.width() + x;
+							imageData[pixelIndex] = pngImage(x, y, 0);
+							imageData[pixelIndex + 1] = pngImage(x, y, 1);
+							imageData[pixelIndex + 2] = pngImage(x, y, 2);
+							//imageData[pixelIndex + 3] = 255;
+						}
+					}
 				}
 
-				char header[54]; // bmp file has 54 byte header
-				bmpfile.read(header, 54);
-				if (header[0] != 'B' || header[1] != 'M') {
-					log.write(filepath);
-					log.write(" has bad header!\n");
-					exit(1);
-				}
-
-				uint32 datapos;
-				datapos = *((int *)&header[0x0A]);
-				imageSize = *((int*)&header[0x22]);
-				width = *((int *)&header[0x12]);
-				height = *((int *)&header[0x16]);
-				if (datapos == 0) datapos = 54;
-
-				char* imageData = new char[imageSize];
-				bmpfile.read(imageData, imageSize);
-
-				if (bmpfile.eof()) {
-					log.write("Error: eof bit set on ");
-					log.write(filepath);
-					log.write("\n");
-				}
-
-				if (bmpfile.fail()) {
-					log.write("Error: fail bit set on ");
-					log.write(filepath);
-					log.write("\n");
-				}
-
-				if (bmpfile.bad()) {
-					log.write("Error: bad bit set on ");
-					log.write(filepath);
-					log.write("\n");
-				}
-
-				bmpfile.close();
+				width = pngImage.width();
+				height = pngImage.height();
+				imageSize = width * height * 3;
 
 				// load textures into a buffer
 				glGenTextures(1, &TextureID);
 				glBindTexture(GL_TEXTURE_2D, TextureID);
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, imageData);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pngImage.data());
 
 				delete[] imageData;
 

@@ -67,7 +67,6 @@ namespace engine2d {
 				int framecount = 0;
 				while (accumulator >= optimalDT) {
 					// creation of a single frame happens every optimalDT milliseconds
-					InputSystem::update();
 					EntitySystem::update();
 					GraphicsSystem::update();
 
