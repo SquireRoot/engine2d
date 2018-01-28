@@ -14,7 +14,7 @@ namespace engine2d {
 
 		GLuint TextureID;
 		
-		Texture(const char* filepath, bool isTransparent) {
+		Texture(const char* filepath) {
 			if (state == GameState::INIT) {
 				cimg_library::CImg<unsigned char> pngImage = cimg_library::CImg<char>(filepath);
 
@@ -23,16 +23,16 @@ namespace engine2d {
 				spectrum = pngImage.spectrum();
 				imageSize = width * height * spectrum;
 
-				// convert image from planar to interleived RGB format
-				unsigned char* imageData = new unsigned char[width*height*spectrum];
+				// convert image from planar to interleived RGBA format
+				unsigned char* imageData = new unsigned char[width*height*4];
 				if (spectrum == 3) {
 					for (int y = 0; y < height; y++) {
 						for (int x = 0; x < width; x++) {
-							uint32 pixelIndex =  3 * (y*width + x);
+							uint32 pixelIndex =  4 * (y*width + x);
 							imageData[pixelIndex] = pngImage(x, height - y, 0);
 							imageData[pixelIndex + 1] = pngImage(x, height - y, 1);
 							imageData[pixelIndex + 2] = pngImage(x, height - y, 2);
-							imageData[pixelIndex + 3] = 0xFF;
+							imageData[pixelIndex + 3] = 255;
 						}
 					}
 				} else if (spectrum == 4) {

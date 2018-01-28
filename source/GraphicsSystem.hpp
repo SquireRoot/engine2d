@@ -23,7 +23,6 @@ TODO
 namespace engine2d {
 	namespace GraphicsSystem {
 		std::vector<GraphicsComponent*> graphicsComponents;
-		std::vector<Texture*> loadedTextures;
 
 		GLuint VertexArrayID;
 		GLuint ShaderID;
@@ -129,8 +128,8 @@ namespace engine2d {
 
 		void init() {
 			glEnable(GL_DEPTH_TEST);
-			glDisable(GL_CULL_FACE);
 			glDepthFunc(GL_LESS);
+			glDisable(GL_CULL_FACE);
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
@@ -140,8 +139,8 @@ namespace engine2d {
 
 			ShaderID = compileShaders();
 
-			Projection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 10.0f, -20.0f);
-			View = glm::lookAt(glm::vec3(0, 0, 10), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+			Projection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 10.0f, -10.0f);
+			View = glm::lookAt(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 			// load the vertex buffer
 			const GLfloat verticies[18] = {
@@ -212,12 +211,6 @@ namespace engine2d {
 			}
 
 			glfwSwapBuffers(Engine::window);
-		}
-
-		Texture* createTexture(const char* filepath, bool isTransparent) {
-			Texture* texture = new Texture(filepath, isTransparent);
-			loadedTextures.push_back(texture);
-			return texture;
 		}
 
 		GraphicsComponent* createComponent(Entity* entity, Texture* texture) {

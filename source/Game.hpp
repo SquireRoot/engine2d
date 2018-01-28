@@ -58,15 +58,20 @@ namespace engine2d {
 		Engine::init();
 
 		//begin textures
-		//Texture* backgroundtex = GraphicsSystem::createTexture("res/spacepng.png", false);
-		Texture* cat = GraphicsSystem::createTexture("res/cat.png", false);
+		Texture backgroundtex = Texture("res/spacepng.png");
+		Texture cat = Texture("res/cat.png");
 		// end textures
 
 		// begin entities
-		Player player = Player(cat);
-		//player.transformComponent.position = glm::vec3(0.0f, 0.0f, 1.0f);
 
-		//Payer2 background = Player2(backgroundtex);
+		Player2 background = Player2(&backgroundtex);
+		background.transformComponent.position.z = 10.0f;
+
+		background.transformComponent.scale = glm::vec3(10.0f, 10.0f, 1.0f);
+
+		Player player = Player(&cat);
+		player.transformComponent.position.z = 5.0f;
+
 		//child.transformComponent.scale = glm::vec3(10.0f, 10.0f, 1.0f);
 		//child.transformComponent.position = glm::vec3(0.0f, 0.0f, 0.0f);
 		// child.localTransformComponent.position = glm::vec3(5.0f, 0.0f, 0.0f);
