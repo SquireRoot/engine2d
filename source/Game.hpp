@@ -59,7 +59,7 @@ namespace engine2d {
 
 		//begin textures
 		//Texture* backgroundtex = GraphicsSystem::createTexture("res/spacepng.png", false);
-		Texture* cat = GraphicsSystem::createTexture("res/fontsheet.png", false);
+		Texture* cat = GraphicsSystem::createTexture("res/cat.png", false);
 		// end textures
 
 		// begin entities
