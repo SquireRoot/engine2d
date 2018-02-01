@@ -4,24 +4,31 @@
 
 namespace engine2d {
 	namespace EntitySystem {
-		std::vector<Entity*> entities;
+		DLinkedList<Entity> entities;
 
 		void update() {
-			for (int i = 0; i < entities.size(); i++) {
-				entities[i]->updateChildren();
-				entities[i]->update();
+			entities.setItBegin();
+			Entity* entity = entities.current();
+			while (entity != NULL) {
+				entity->updateChildren();
+				entity->update();
+				entity = entities.next();
 			}
 		}
 
 		void add(Entity* entity) {
-			entities.push_back(entity);
+			entities.add(entity);
 		}
 
-		void remove(Entity* entity) {
-			for (int i = 0; i < entities.size(); i++) {
-				if (entities[i]->id == entity->id) {
-					entities.erase((entities.begin() + i));
+		void remove(GUID id) {
+			entities.setItBegin();
+			Entity* component = entities.current();
+			while (component != NULL) {
+				if (id == component->id) {
+					delete component;
+					entities.remove();
 				}
+				component = entities.next();
 			}
 		}
 	}

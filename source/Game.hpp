@@ -34,6 +34,7 @@ namespace engine2d {
 }
 
 // game includes, order is important
+#include "DLinkedList.hpp"
 #include "Texture.hpp"
 #include "Component.hpp"
 #include "Transform.hpp"
@@ -61,6 +62,7 @@ namespace engine2d {
 		Texture backgroundtex = Texture("res/spacepng.png");
 		Texture cat = Texture("res/cat.png");
 		// end textures
+
 
 		// begin entities
 

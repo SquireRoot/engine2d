@@ -25,24 +25,16 @@ namespace engine2d {
 
 				// convert image from planar to interleived RGBA format
 				unsigned char* imageData = new unsigned char[width*height*4];
-				if (spectrum == 3) {
-					for (int y = 0; y < height; y++) {
-						for (int x = 0; x < width; x++) {
-							uint32 pixelIndex =  4 * (y*width + x);
-							imageData[pixelIndex] = pngImage(x, height - y, 0);
-							imageData[pixelIndex + 1] = pngImage(x, height - y, 1);
-							imageData[pixelIndex + 2] = pngImage(x, height - y, 2);
-							imageData[pixelIndex + 3] = 255;
-						}
-					}
-				} else if (spectrum == 4) {
-					for (int y = 0; y < height; y++) {
-						for (int x = 0; x < width; x++) {
-							uint32 pixelIndex = 4 * (y*width + x);
-							imageData[pixelIndex] = pngImage(x, height - y, 0);
-							imageData[pixelIndex + 1] = pngImage(x, height - y, 1);
-							imageData[pixelIndex + 2] = pngImage(x, height - y, 2);
+				for (int y = 0; y < height; y++) {
+					for (int x = 0; x < width; x++) {
+						uint32 pixelIndex = 4 * (y*width + x);
+						imageData[pixelIndex] = pngImage(x, height - y, 0);
+						imageData[pixelIndex + 1] = pngImage(x, height - y, 1);
+						imageData[pixelIndex + 2] = pngImage(x, height - y, 2);
+						if (spectrum == 4) {
 							imageData[pixelIndex + 3] = pngImage(x, height - y, 3);
+						} else if (spectrum = 3) {
+							imageData[pixelIndex + 3] = 255;
 						}
 					}
 				}

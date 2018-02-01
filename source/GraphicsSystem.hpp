@@ -7,22 +7,14 @@
 #include <glm\glm.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 
-#include <vector>
+#include <list>
 #include <string>
 #include <fstream>
 #include <algorithm> 
 
-/*
-TODO
-- normal vector?
-- change texture array to a array texture
-- send the mvp matricies as an array of all models
-- change to single gldrawtriangles call per iteration
-*/
-
 namespace engine2d {
 	namespace GraphicsSystem {
-		std::vector<GraphicsComponent*> graphicsComponents;
+		DLinkedList<GraphicsComponent> graphicsComponents;
 
 		GLuint VertexArrayID;
 		GLuint ShaderID;
@@ -176,6 +168,8 @@ namespace engine2d {
 		}
 
 		void update() {
+			//TODO: sort graphics components (insertion sort)
+
 			// clear and start rendering
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glUseProgram(ShaderID);
@@ -183,8 +177,9 @@ namespace engine2d {
 			GLuint mvpMatrixID = glGetUniformLocation(ShaderID, "MVP");
 			GLuint SamplerID = glGetUniformLocation(ShaderID, "sampler");
 
-			for (int i = 0; i < graphicsComponents.size(); i++) {
-				GraphicsComponent* component = graphicsComponents[i];
+			graphicsComponents.setItBegin();
+			GraphicsComponent* component = graphicsComponents.current();
+			while (component != NULL) {
 				component->update();
 
 				glm::mat4 mvp = component->modelViewProjection;
@@ -205,27 +200,30 @@ namespace engine2d {
 				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 				glDrawArrays(GL_TRIANGLES, 0, 6);
-
 				glDisableVertexAttribArray(0);
 				glDisableVertexAttribArray(1);
-			}
 
+				component = graphicsComponents.next();
+			}
 			glfwSwapBuffers(Engine::window);
 		}
 
 		GraphicsComponent* createComponent(Entity* entity, Texture* texture) {
 			GraphicsComponent* component = new GraphicsComponent(entity, texture);
-			graphicsComponents.push_back(component);
+			graphicsComponents.add(component);
 			return component;
 		}
 
 		void destroyComponent(GUID id) {
-			for (int i = 0; i < graphicsComponents.size(); i++) {
-				if (id == graphicsComponents[i]->id) {
-					delete graphicsComponents[i];
-					graphicsComponents.erase((graphicsComponents.begin() + i));
+			graphicsComponents.setItBegin();
+			GraphicsComponent* component = graphicsComponents.current();
+			while (component != NULL) {
+				if (id == component->id) {
+					delete component;
+					graphicsComponents.remove();
 				}
-			}
+				component = graphicsComponents.next();
+			} 
 		}
 	}
 }
